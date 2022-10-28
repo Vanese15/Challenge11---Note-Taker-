@@ -1,8 +1,7 @@
-
 const express = require("express");
 const fs = require("fs");
+let db = require("./db/db.json");
 const path = require("path");
-
 const app = express();
 const PORT = 3001;
 
@@ -11,7 +10,7 @@ app.use(express.static("public"));
 
 
 app.get("/api/notes", (req, res) =>
-res.sendFile(path.join(__dirname, "/db/db.json"))
+res.sendFile(path.join(__dirname, "./db/db.json"))
 );
 
 app.get("/notes", (req, res) =>
@@ -23,9 +22,16 @@ res.sendFile(path.join(__dirname, "/public/index.html"))
 );
 
 app.post("/api/notes", (req, res) => {
-    let newNote = req.body; 
-    let addNote = JSON.parse(fs.readAndAppend("/db/db.json"))}
-   
+    const note = {
+        id: newNote.length+1,
+        title: req.body.title,
+        text: req.body.text,
+    }
+
+    newNote.push(note);
+     fs.writeFileSync("./db/db.json" , JSON.stringify(newNote));
+     res.send(newNote);  
+}
 );
 
 app.listen(PORT, () =>
